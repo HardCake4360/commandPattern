@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class CommandInvoker : MonoBehaviour
 {
-    private List<TimedCommand> commandHistory = new List<TimedCommand>();
+    private Queue<TimedCommand> commandHistory = new Queue<TimedCommand>();
     private float startTime;
+    public int maxSize;
 
     public void StartRecording()
     {
@@ -15,9 +16,16 @@ public class CommandInvoker : MonoBehaviour
 
     public void ExecuteCommand(ICommand command)
     {
-        command.Execute();
         float timeStamp = Time.time - startTime;
-        commandHistory.Add(new TimedCommand(command,timeStamp));
+        var timedCommand = new TimedCommand(command, timeStamp);
+
+        if(commandHistory.Count >= maxSize)
+        {
+            commandHistory.Dequeue();
+        }
+
+        command.Execute();
+        commandHistory.Enqueue(timedCommand);
     }
 
     public void ReplayCommands(MonoBehaviour context)
@@ -29,10 +37,12 @@ public class CommandInvoker : MonoBehaviour
     {
         if (commandHistory.Count == 0)
             yield break;
-        
+
+        TimedCommand[] commandsArray = commandHistory.ToArray();
+
         float previousTime = 0f;
 
-        foreach (var timedCommand in commandHistory)
+        foreach (var timedCommand in commandsArray)
         {
             float delay = timedCommand.Timestamp - previousTime;
             yield return new WaitForSeconds(delay);
