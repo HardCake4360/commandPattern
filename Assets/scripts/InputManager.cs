@@ -5,7 +5,7 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public PlayerController player;
-    private CommandInvoker invoker = new CommandInvoker();
+    public CommandInvoker invoker;
 
     private void Start()
     {
@@ -35,6 +35,7 @@ public class InputManager : MonoBehaviour
         if (Input.GetMouseButtonDown(1)) // ¿ìÅ¬¸¯
         {
             invoker.ReplayCommands(this);
+            player.transform.position = invoker.commandHistory[0].PosStamp;
         }
     }
 }

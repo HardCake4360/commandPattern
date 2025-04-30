@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class CommandInvoker : MonoBehaviour
 {
-    private List<TimedCommand> commandHistory = new List<TimedCommand>();
+    public List<TimedCommand> commandHistory = new List<TimedCommand>();
+    public GameObject player;
     private float startTime;
 
     public int maxHistorySize = 100;
@@ -22,7 +23,7 @@ public class CommandInvoker : MonoBehaviour
         command.Execute();
         
         float timeStamp = Time.time - startTime;
-        commandHistory.Add(new TimedCommand(command,timeStamp));
+        commandHistory.Add(new TimedCommand(command, timeStamp, player.transform.position));
 
         if(commandHistory.Count >= maxHistorySize)
             commandHistory.RemoveAt(0);
@@ -56,7 +57,8 @@ public class CommandInvoker : MonoBehaviour
 
     private void Update()
     {
-        HistoryBar.value = commandHistory.Count / maxHistorySize;
+        HistoryBar.value = commandHistory.Count / (float)maxHistorySize;
         Debug.Log(commandHistory.Count);
+        Debug.Log(HistoryBar.value);
     }
 }
