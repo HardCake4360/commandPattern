@@ -58,7 +58,5 @@ public class CommandInvoker : MonoBehaviour
     private void Update()
     {
         HistoryBar.value = commandHistory.Count / (float)maxHistorySize;
-        Debug.Log(commandHistory.Count);
-        Debug.Log(HistoryBar.value);
     }
 }
