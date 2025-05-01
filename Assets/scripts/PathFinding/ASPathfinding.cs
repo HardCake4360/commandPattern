@@ -14,19 +14,35 @@ public class ASPathfinding : MonoBehaviour
     {
         List<Node> path = new();
         Node current = endNode;
+        if(endNode.parent == null)
+        {
+            Debug.LogWarning("path finding failed: endNode.parent is null");
+            return null;
+        }
+
+        int safetyCnt = 0;
+        int maxPathLength = 1000;
+
         while(current != null)
         {
             path.Add(current);
             current = current.parent;
         }
+
+        if (safetyCnt >= maxPathLength)
+        {
+            Debug.LogWarning("path finding failed: maybe infinite loop");
+        }
+            
         path.Reverse();
         return path;
     }
 
     public static List<Node> FindPath(Vector2Int startPos, Vector2Int endPos)
     {
-        GridManager grid = GridManager.Instance;
 
+        GridManager grid = GridManager.Instance;
+        grid.InitGrid();
         //시작, 도착노드 설정
         Node startNode = grid.GetNode(startPos);
         Node endNode = grid.GetNode(endPos);
